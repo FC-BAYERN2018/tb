@@ -1,19 +1,13 @@
 //****************************************Copyright (c)***********************************//
-//Ô­×Ó¸çÔÚÏß½ÌÑ§Æ½Ì¨£ºwww.yuanzige.com
-//¼¼ÊõÖ§³Ö£ºwww.openedv.com
-//ÌÔ±¦µêÆÌ£ºhttp://openedv.taobao.com
-//¹Ø×¢Î¢ÐÅ¹«ÖÚÆ½Ì¨Î¢ÐÅºÅ£º"ÕýµãÔ­×Ó"£¬Ãâ·Ñ»ñÈ¡ZYNQ & FPGA & STM32 & LINUX×ÊÁÏ¡£
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ÕýµãÔ­×Ó 2018-2028
-//All rights reserved
+//åˆ é™¤ä½œä¸ºä¿®æ”¹
 //----------------------------------------------------------------------------------------
 // File name:           i2c_dri
 // Last modified Date:  2019/05/04 9:19:08
 // Last Version:        V1.0
-// Descriptions:        IICÇý¶¯
+// Descriptions:        IICï¿½ï¿½ï¿½ï¿½
 //                      
 //----------------------------------------------------------------------------------------
-// Created by:          ÕýµãÔ­×Ó
+// Created by:          ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½
 // Created date:        2019/05/04 9:19:08
 // Version:             V1.0
 // Descriptions:        The original version
@@ -23,67 +17,67 @@
 
 module i2c_dri
     #(
-      parameter   SLAVE_ADDR = 7'b1010000   ,  //EEPROM´Ó»úµØÖ·
-      parameter   CLK_FREQ   = 26'd50_000_000, //Ä£¿éÊäÈëµÄÊ±ÖÓÆµÂÊ
-      parameter   I2C_FREQ   = 18'd250_000     //IIC_SCLµÄÊ±ÖÓÆµÂÊ
+      parameter   SLAVE_ADDR = 7'b1010000   ,  //EEPROMï¿½Ó»ï¿½ï¿½ï¿½Ö·
+      parameter   CLK_FREQ   = 26'd50_000_000, //Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Æµï¿½ï¿½
+      parameter   I2C_FREQ   = 18'd250_000     //IIC_SCLï¿½ï¿½Ê±ï¿½ï¿½Æµï¿½ï¿½
     )
    (                                                            
     input                clk        ,    
     input                rst_n      ,   
                                          
     //i2c interface                      
-    input                i2c_exec   ,  //I2C´¥·¢Ö´ÐÐÐÅºÅ
-    input                bit_ctrl   ,  //×ÖµØÖ·Î»¿ØÖÆ(16b/8b)
-    input                i2c_rh_wl  ,  //I2C¶ÁÐ´¿ØÖÆÐÅºÅ
-    input        [15:0]  i2c_addr   ,  //I2CÆ÷¼þÄÚµØÖ·
-    input        [ 7:0]  i2c_data_w ,  //I2CÒªÐ´µÄÊý¾Ý
-    output  reg  [ 7:0]  i2c_data_r ,  //I2C¶Á³öµÄÊý¾Ý
-    output  reg          i2c_done   ,  //I2CÒ»´Î²Ù×÷Íê³É
-    output  reg          i2c_ack    ,  //I2CÓ¦´ð±êÖ¾ 0:Ó¦´ð 1:Î´Ó¦´ð
-    output  reg          scl        ,  //I2CµÄSCLÊ±ÖÓÐÅºÅ
-    inout                sda        ,  //I2CµÄSDAÐÅºÅ
+    input                i2c_exec   ,  //I2Cï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Åºï¿½
+    input                bit_ctrl   ,  //ï¿½Öµï¿½Ö·Î»ï¿½ï¿½ï¿½ï¿½(16b/8b)
+    input                i2c_rh_wl  ,  //I2Cï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
+    input        [15:0]  i2c_addr   ,  //I2Cï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ö·
+    input        [ 7:0]  i2c_data_w ,  //I2CÒªÐ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output  reg  [ 7:0]  i2c_data_r ,  //I2Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output  reg          i2c_done   ,  //I2CÒ»ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    output  reg          i2c_ack    ,  //I2CÓ¦ï¿½ï¿½ï¿½Ö¾ 0:Ó¦ï¿½ï¿½ 1:Î´Ó¦ï¿½ï¿½
+    output  reg          scl        ,  //I2Cï¿½ï¿½SCLÊ±ï¿½ï¿½ï¿½Åºï¿½
+    inout                sda        ,  //I2Cï¿½ï¿½SDAï¿½Åºï¿½
                                        
     //user interface                   
-    output  reg          dri_clk       //Çý¶¯I2C²Ù×÷µÄÇý¶¯Ê±ÖÓ
+    output  reg          dri_clk       //ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
      );
 
 //localparam define
-localparam  st_idle     = 8'd1; //¿ÕÏÐ×´Ì¬
-localparam  st_sladdr   = 8'd2; //·¢ËÍÆ÷¼þµØÖ·(slave address)
-localparam  st_addr16   = 8'd3; //·¢ËÍ16Î»×ÖµØÖ·
-localparam  st_addr8    = 8'd4; //·¢ËÍ8Î»×ÖµØÖ·
-localparam  st_data_wr  = 8'd5; //Ð´Êý¾Ý(8 bit)
-localparam  st_addr_rd  = 8'd6; //·¢ËÍÆ÷¼þµØÖ·¶Á
-localparam  st_data_rd  = 8'd7; //¶ÁÊý¾Ý(8 bit)
-localparam  st_stop     = 8'd8; //½áÊøI2C²Ù×÷
+localparam  st_idle     = 8'd1; //ï¿½ï¿½ï¿½ï¿½×´Ì¬
+localparam  st_sladdr   = 8'd2; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·(slave address)
+localparam  st_addr16   = 8'd3; //ï¿½ï¿½ï¿½ï¿½16Î»ï¿½Öµï¿½Ö·
+localparam  st_addr8    = 8'd4; //ï¿½ï¿½ï¿½ï¿½8Î»ï¿½Öµï¿½Ö·
+localparam  st_data_wr  = 8'd5; //Ð´ï¿½ï¿½ï¿½ï¿½(8 bit)
+localparam  st_addr_rd  = 8'd6; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½
+localparam  st_data_rd  = 8'd7; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(8 bit)
+localparam  st_stop     = 8'd8; //ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½ï¿½ï¿½
 
 //reg define
-reg            sda_dir   ; //I2CÊý¾Ý(SDA)·½Ïò¿ØÖÆ
-reg            sda_out   ; //SDAÊä³öÐÅºÅ
-reg            st_done   ; //×´Ì¬½áÊø
-reg            wr_flag   ; //Ð´±êÖ¾
-reg    [ 6:0]  cnt       ; //¼ÆÊý
-reg    [ 7:0]  cur_state ; //×´Ì¬»úµ±Ç°×´Ì¬
-reg    [ 7:0]  next_state; //×´Ì¬»úÏÂÒ»×´Ì¬
-reg    [15:0]  addr_t    ; //µØÖ·
-reg    [ 7:0]  data_r    ; //¶ÁÈ¡µÄÊý¾Ý
-reg    [ 7:0]  data_wr_t ; //I2CÐèÐ´µÄÊý¾ÝµÄÁÙÊ±¼Ä´æ
-reg    [ 9:0]  clk_cnt   ; //·ÖÆµÊ±ÖÓ¼ÆÊý
+reg            sda_dir   ; //I2Cï¿½ï¿½ï¿½ï¿½(SDA)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+reg            sda_out   ; //SDAï¿½ï¿½ï¿½ï¿½Åºï¿½
+reg            st_done   ; //×´Ì¬ï¿½ï¿½ï¿½ï¿½
+reg            wr_flag   ; //Ð´ï¿½ï¿½Ö¾
+reg    [ 6:0]  cnt       ; //ï¿½ï¿½ï¿½ï¿½
+reg    [ 7:0]  cur_state ; //×´Ì¬ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬
+reg    [ 7:0]  next_state; //×´Ì¬ï¿½ï¿½ï¿½ï¿½Ò»×´Ì¬
+reg    [15:0]  addr_t    ; //ï¿½ï¿½Ö·
+reg    [ 7:0]  data_r    ; //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+reg    [ 7:0]  data_wr_t ; //I2Cï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½Ê±ï¿½Ä´ï¿½
+reg    [ 9:0]  clk_cnt   ; //ï¿½ï¿½ÆµÊ±ï¿½Ó¼ï¿½ï¿½ï¿½
 
 //wire define
-wire          sda_in     ; //SDAÊäÈëÐÅºÅ
-wire   [8:0]  clk_divide ; //Ä£¿éÇý¶¯Ê±ÖÓµÄ·ÖÆµÏµÊý
+wire          sda_in     ; //SDAï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
+wire   [8:0]  clk_divide ; //Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÓµÄ·ï¿½ÆµÏµï¿½ï¿½
 
 //*****************************************************
 //**                    main code
 //*****************************************************
 
-//SDA¿ØÖÆ
-assign  sda     = sda_dir ?  sda_out : 1'bz;     //SDAÊý¾ÝÊä³ö»ò¸ß×è
-assign  sda_in  = sda ;                          //SDAÊý¾ÝÊäÈë
-assign  clk_divide = (CLK_FREQ/I2C_FREQ) >> 2'd2;//Ä£¿éÇý¶¯Ê±ÖÓµÄ·ÖÆµÏµÊý
+//SDAï¿½ï¿½ï¿½ï¿½
+assign  sda     = sda_dir ?  sda_out : 1'bz;     //SDAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+assign  sda_in  = sda ;                          //SDAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+assign  clk_divide = (CLK_FREQ/I2C_FREQ) >> 2'd2;//Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÓµÄ·ï¿½ÆµÏµï¿½ï¿½
 
-//Éú³ÉI2CµÄSCLµÄËÄ±¶ÆµÂÊµÄÇý¶¯Ê±ÖÓÓÃÓÚÇý¶¯i2cµÄ²Ù×÷
+//ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½SCLï¿½ï¿½ï¿½Ä±ï¿½Æµï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½i2cï¿½Ä²ï¿½ï¿½ï¿½
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         dri_clk <=  1'b0;
@@ -97,7 +91,7 @@ always @(posedge clk or negedge rst_n) begin
         clk_cnt <= clk_cnt + 1'b1;
 end
 
-//(Èý¶ÎÊ½×´Ì¬»ú)Í¬²½Ê±ÐòÃèÊö×´Ì¬×ªÒÆ
+//(ï¿½ï¿½ï¿½ï¿½Ê½×´Ì¬ï¿½ï¿½)Í¬ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬×ªï¿½ï¿½
 always @(posedge dri_clk or negedge rst_n) begin
     if(!rst_n)
         cur_state <= st_idle;
@@ -105,11 +99,11 @@ always @(posedge dri_clk or negedge rst_n) begin
         cur_state <= next_state;
 end
 
-//×éºÏÂß¼­ÅÐ¶Ï×´Ì¬×ªÒÆÌõ¼þ
+//ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½Ð¶ï¿½×´Ì¬×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 always @(*) begin
     next_state = st_idle;
     case(cur_state)
-        st_idle: begin                          //¿ÕÏÐ×´Ì¬
+        st_idle: begin                          //ï¿½ï¿½ï¿½ï¿½×´Ì¬
            if(i2c_exec) begin
                next_state = st_sladdr;
            end
@@ -118,7 +112,7 @@ always @(*) begin
         end
         st_sladdr: begin
             if(st_done) begin
-                if(bit_ctrl)                    //ÅÐ¶ÏÊÇ16Î»»¹ÊÇ8Î»×ÖµØÖ·
+                if(bit_ctrl)                    //ï¿½Ð¶ï¿½ï¿½ï¿½16Î»ï¿½ï¿½ï¿½ï¿½8Î»ï¿½Öµï¿½Ö·
                    next_state = st_addr16;
                 else
                    next_state = st_addr8 ;
@@ -126,7 +120,7 @@ always @(*) begin
             else
                 next_state = st_sladdr;
         end
-        st_addr16: begin                        //Ð´16Î»×ÖµØÖ·
+        st_addr16: begin                        //Ð´16Î»ï¿½Öµï¿½Ö·
             if(st_done) begin
                 next_state = st_addr8;
             end
@@ -134,9 +128,9 @@ always @(*) begin
                 next_state = st_addr16;
             end
         end
-        st_addr8: begin                         //8Î»×ÖµØÖ·
+        st_addr8: begin                         //8Î»ï¿½Öµï¿½Ö·
             if(st_done) begin
-                if(wr_flag==1'b0)               //¶ÁÐ´ÅÐ¶Ï
+                if(wr_flag==1'b0)               //ï¿½ï¿½Ð´ï¿½Ð¶ï¿½
                     next_state = st_data_wr;
                 else
                     next_state = st_addr_rd;
@@ -145,13 +139,13 @@ always @(*) begin
                 next_state = st_addr8;
             end
         end
-        st_data_wr: begin                       //Ð´Êý¾Ý(8 bit)
+        st_data_wr: begin                       //Ð´ï¿½ï¿½ï¿½ï¿½(8 bit)
             if(st_done)
                 next_state = st_stop;
             else
                 next_state = st_data_wr;
         end
-        st_addr_rd: begin                       //Ð´µØÖ·ÒÔ½øÐÐ¶ÁÊý¾Ý
+        st_addr_rd: begin                       //Ð´ï¿½ï¿½Ö·ï¿½Ô½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
             if(st_done) begin
                 next_state = st_data_rd;
             end
@@ -159,13 +153,13 @@ always @(*) begin
                 next_state = st_addr_rd;
             end
         end
-        st_data_rd: begin                       //¶ÁÈ¡Êý¾Ý(8 bit)
+        st_data_rd: begin                       //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½(8 bit)
             if(st_done)
                 next_state = st_stop;
             else
                 next_state = st_data_rd;
         end
-        st_stop: begin                          //½áÊøI2C²Ù×÷
+        st_stop: begin                          //ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½ï¿½ï¿½
             if(st_done)
                 next_state = st_idle;
             else
@@ -175,9 +169,9 @@ always @(*) begin
     endcase
 end
 
-//Ê±ÐòµçÂ·ÃèÊö×´Ì¬Êä³ö
+//Ê±ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½
 always @(posedge dri_clk or negedge rst_n) begin
-    //¸´Î»³õÊ¼»¯
+    //ï¿½ï¿½Î»ï¿½ï¿½Ê¼ï¿½ï¿½
     if(!rst_n) begin
         scl       <= 1'b1;
         sda_out   <= 1'b1;
@@ -196,7 +190,7 @@ always @(posedge dri_clk or negedge rst_n) begin
         st_done <= 1'b0 ;                            
         cnt     <= cnt +1'b1 ;                       
         case(cur_state)                              
-             st_idle: begin                          //¿ÕÏÐ×´Ì¬
+             st_idle: begin                          //ï¿½ï¿½ï¿½ï¿½×´Ì¬
                 scl     <= 1'b1;                     
                 sda_out <= 1'b1;                     
                 sda_dir <= 1'b1;                     
@@ -209,11 +203,11 @@ always @(posedge dri_clk or negedge rst_n) begin
                     i2c_ack <= 1'b0;                      
                 end                                  
             end                                      
-            st_sladdr: begin                         //Ð´µØÖ·(Æ÷¼þµØÖ·ºÍ×ÖµØÖ·)
+            st_sladdr: begin                         //Ð´ï¿½ï¿½Ö·(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Öµï¿½Ö·)
                 case(cnt)                            
-                    7'd1 : sda_out <= 1'b0;          //¿ªÊ¼I2C
+                    7'd1 : sda_out <= 1'b0;          //ï¿½ï¿½Ê¼I2C
                     7'd3 : scl <= 1'b0;              
-                    7'd4 : sda_out <= SLAVE_ADDR[6]; //´«ËÍÆ÷¼þµØÖ·
+                    7'd4 : sda_out <= SLAVE_ADDR[6]; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
                     7'd5 : scl <= 1'b1;              
                     7'd7 : scl <= 1'b0;              
                     7'd8 : sda_out <= SLAVE_ADDR[5]; 
@@ -242,10 +236,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;                         
                     end                              
                     7'd37: scl     <= 1'b1;            
-                    7'd38: begin                     //´Ó»úÓ¦´ð 
+                    7'd38: begin                     //ï¿½Ó»ï¿½Ó¦ï¿½ï¿½ 
                         st_done <= 1'b1;
-                        if(sda_in == 1'b1)           //¸ßµçÆ½±íÊ¾Î´Ó¦´ð
-                            i2c_ack <= 1'b1;         //À­¸ßÓ¦´ð±êÖ¾Î»     
+                        if(sda_in == 1'b1)           //ï¿½ßµï¿½Æ½ï¿½ï¿½Ê¾Î´Ó¦ï¿½ï¿½
+                            i2c_ack <= 1'b1;         //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾Î»     
                     end                                          
                     7'd39: begin                     
                         scl <= 1'b0;                 
@@ -258,7 +252,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                 case(cnt)                            
                     7'd0 : begin                     
                         sda_dir <= 1'b1 ;            
-                        sda_out <= addr_t[15];       //´«ËÍ×ÖµØÖ·
+                        sda_out <= addr_t[15];       //ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ö·
                     end                              
                     7'd1 : scl <= 1'b1;              
                     7'd3 : scl <= 1'b0;              
@@ -288,10 +282,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;   
                     end                              
                     7'd33: scl  <= 1'b1;             
-                    7'd34: begin                     //´Ó»úÓ¦´ð
+                    7'd34: begin                     //ï¿½Ó»ï¿½Ó¦ï¿½ï¿½
                         st_done <= 1'b1;     
-                        if(sda_in == 1'b1)           //¸ßµçÆ½±íÊ¾Î´Ó¦´ð
-                            i2c_ack <= 1'b1;         //À­¸ßÓ¦´ð±êÖ¾Î»    
+                        if(sda_in == 1'b1)           //ï¿½ßµï¿½Æ½ï¿½ï¿½Ê¾Î´Ó¦ï¿½ï¿½
+                            i2c_ack <= 1'b1;         //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾Î»    
                     end        
                     7'd35: begin                     
                         scl <= 1'b0;                 
@@ -304,7 +298,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                 case(cnt)                            
                     7'd0: begin                      
                        sda_dir <= 1'b1 ;             
-                       sda_out <= addr_t[7];         //×ÖµØÖ·
+                       sda_out <= addr_t[7];         //ï¿½Öµï¿½Ö·
                     end                              
                     7'd1 : scl <= 1'b1;              
                     7'd3 : scl <= 1'b0;              
@@ -334,10 +328,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;                    
                     end                              
                     7'd33: scl     <= 1'b1;          
-                    7'd34: begin                     //´Ó»úÓ¦´ð
+                    7'd34: begin                     //ï¿½Ó»ï¿½Ó¦ï¿½ï¿½
                         st_done <= 1'b1;     
-                        if(sda_in == 1'b1)           //¸ßµçÆ½±íÊ¾Î´Ó¦´ð
-                            i2c_ack <= 1'b1;         //À­¸ßÓ¦´ð±êÖ¾Î»    
+                        if(sda_in == 1'b1)           //ï¿½ßµï¿½Æ½ï¿½ï¿½Ê¾Î´Ó¦ï¿½ï¿½
+                            i2c_ack <= 1'b1;         //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾Î»    
                     end   
                     7'd35: begin                     
                         scl <= 1'b0;                 
@@ -346,10 +340,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                     default :  ;                     
                 endcase                              
             end                                      
-            st_data_wr: begin                        //Ð´Êý¾Ý(8 bit)
+            st_data_wr: begin                        //Ð´ï¿½ï¿½ï¿½ï¿½(8 bit)
                 case(cnt)                            
                     7'd0: begin                      
-                        sda_out <= data_wr_t[7];     //I2CÐ´8Î»Êý¾Ý
+                        sda_out <= data_wr_t[7];     //I2CÐ´8Î»ï¿½ï¿½ï¿½ï¿½
                         sda_dir <= 1'b1;             
                     end                              
                     7'd1 : scl <= 1'b1;              
@@ -380,10 +374,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;                              
                     end                              
                     7'd33: scl <= 1'b1;              
-                    7'd34: begin                     //´Ó»úÓ¦´ð
+                    7'd34: begin                     //ï¿½Ó»ï¿½Ó¦ï¿½ï¿½
                         st_done <= 1'b1;     
-                        if(sda_in == 1'b1)           //¸ßµçÆ½±íÊ¾Î´Ó¦´ð
-                            i2c_ack <= 1'b1;         //À­¸ßÓ¦´ð±êÖ¾Î»    
+                        if(sda_in == 1'b1)           //ï¿½ßµï¿½Æ½ï¿½ï¿½Ê¾Î´Ó¦ï¿½ï¿½
+                            i2c_ack <= 1'b1;         //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾Î»    
                     end          
                     7'd35: begin                     
                         scl  <= 1'b0;                
@@ -392,16 +386,16 @@ always @(posedge dri_clk or negedge rst_n) begin
                     default  :  ;                    
                 endcase                              
             end                                      
-            st_addr_rd: begin                        //Ð´µØÖ·ÒÔ½øÐÐ¶ÁÊý¾Ý
+            st_addr_rd: begin                        //Ð´ï¿½ï¿½Ö·ï¿½Ô½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
                 case(cnt)                            
                     7'd0 : begin                     
                         sda_dir <= 1'b1;             
                         sda_out <= 1'b1;             
                     end                              
                     7'd1 : scl <= 1'b1;              
-                    7'd2 : sda_out <= 1'b0;          //ÖØÐÂ¿ªÊ¼
+                    7'd2 : sda_out <= 1'b0;          //ï¿½ï¿½ï¿½Â¿ï¿½Ê¼
                     7'd3 : scl <= 1'b0;              
-                    7'd4 : sda_out <= SLAVE_ADDR[6]; //´«ËÍÆ÷¼þµØÖ·
+                    7'd4 : sda_out <= SLAVE_ADDR[6]; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
                     7'd5 : scl <= 1'b1;              
                     7'd7 : scl <= 1'b0;              
                     7'd8 : sda_out <= SLAVE_ADDR[5]; 
@@ -422,7 +416,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                     7'd28: sda_out <= SLAVE_ADDR[0]; 
                     7'd29: scl <= 1'b1;              
                     7'd31: scl <= 1'b0;              
-                    7'd32: sda_out <= 1'b1;          //1:¶Á
+                    7'd32: sda_out <= 1'b1;          //1:ï¿½ï¿½
                     7'd33: scl <= 1'b1;              
                     7'd35: scl <= 1'b0;              
                     7'd36: begin                     
@@ -430,10 +424,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;                    
                     end
                     7'd37: scl     <= 1'b1;
-                    7'd38: begin                     //´Ó»úÓ¦´ð
+                    7'd38: begin                     //ï¿½Ó»ï¿½Ó¦ï¿½ï¿½
                         st_done <= 1'b1;     
-                        if(sda_in == 1'b1)           //¸ßµçÆ½±íÊ¾Î´Ó¦´ð
-                            i2c_ack <= 1'b1;         //À­¸ßÓ¦´ð±êÖ¾Î»    
+                        if(sda_in == 1'b1)           //ï¿½ßµï¿½Æ½ï¿½ï¿½Ê¾Î´Ó¦ï¿½ï¿½
+                            i2c_ack <= 1'b1;         //ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¾Î»    
                     end   
                     7'd39: begin
                         scl <= 1'b0;
@@ -442,7 +436,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                     default : ;
                 endcase
             end
-            st_data_rd: begin                        //¶ÁÈ¡Êý¾Ý(8 bit)
+            st_data_rd: begin                        //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½(8 bit)
                 case(cnt)
                     7'd0: sda_dir <= 1'b0;
                     7'd1: begin
@@ -490,7 +484,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                         sda_out <= 1'b1;
                     end
                     7'd33: scl     <= 1'b1;
-                    7'd34: st_done <= 1'b1;          //·ÇÓ¦´ð
+                    7'd34: st_done <= 1'b1;          //ï¿½ï¿½Ó¦ï¿½ï¿½
                     7'd35: begin
                         scl <= 1'b0;
                         cnt <= 1'b0;
@@ -499,10 +493,10 @@ always @(posedge dri_clk or negedge rst_n) begin
                     default  :  ;
                 endcase
             end
-            st_stop: begin                           //½áÊøI2C²Ù×÷
+            st_stop: begin                           //ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½ï¿½ï¿½
                 case(cnt)
                     7'd0: begin
-                        sda_dir <= 1'b1;             //½áÊøI2C
+                        sda_dir <= 1'b1;             //ï¿½ï¿½ï¿½ï¿½I2C
                         sda_out <= 1'b0;
                     end
                     7'd1 : scl     <= 1'b1;
@@ -510,7 +504,7 @@ always @(posedge dri_clk or negedge rst_n) begin
                     7'd15: st_done <= 1'b1;
                     7'd16: begin
                         cnt      <= 1'b0;
-                        i2c_done <= 1'b1;            //ÏòÉÏ²ãÄ£¿é´«µÝI2C½áÊøÐÅºÅ
+                        i2c_done <= 1'b1;            //ï¿½ï¿½ï¿½Ï²ï¿½Ä£ï¿½é´«ï¿½ï¿½I2Cï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
                     end
                     default  : ;
                 endcase
