@@ -77,7 +77,7 @@ always @(posedge dri_clk or negedge sys_rst_n) begin
                 bit_ctrl <= 1'b0;                //地址位选择信号   0: 8位
                 i2c_rh_wl <= 1'b0;               //写操作
                 i2c_addr <= 16'h01;              //写配置寄存器地址01h
-                i2c_data_w <= 8'hA0;             //写配置寄存器低8位数据A0h
+                i2c_data_w <= 8'hAB;             //写配置寄存器低8位数据ABh
                 flow_cnt <= flow_cnt + 1'b1;
             end
             'd5 : begin 
@@ -89,13 +89,11 @@ always @(posedge dri_clk or negedge sys_rst_n) begin
                     flow_cnt <= flow_cnt + 1'b1;
             end
             'd7 : begin
-                delay_cnt <= delay_cnt + 1'b1;
-                if(delay_cnt == IIC_WR_CYCYLE - 1'b1) begin
-                    delay_cnt <= 0;
-                    flow_cnt <= flow_cnt + 1'b1;
-                end
+                // 写入完成后停止，不执行后续的温度读取操作
+                flow_cnt <= flow_cnt; // 保持当前状态，不再继续
             end
-            // 读取温度寄存器的哑写操作
+            // 以下是读取温度寄存器的操作，如果只需要写入配置参数，可以注释掉
+            /*
             'd8 : begin
                 i2c_exec <= 1'b1;                //拉高触发信号
                 bit_ctrl <= 1'b0;                //地址位选择信号   0: 8位
@@ -112,7 +110,6 @@ always @(posedge dri_clk or negedge sys_rst_n) begin
                 if(i2c_done)
                     flow_cnt <= flow_cnt + 1'b1;
             end
-            // 读取温度寄存器的读操作
             'd11 : begin
                 i2c_exec <= 1'b1;                //拉高触发信号
                 bit_ctrl <= 1'b0;                //地址位选择信号   0: 8位
@@ -128,35 +125,35 @@ always @(posedge dri_clk or negedge sys_rst_n) begin
                 if(i2c_done)
                     flow_cnt <= flow_cnt + 1'b1;
             end
+            */
             default:;
         endcase    
     end
 end
 
 pullup(sda);
-
-//例化led模块
+//例化I2C驱动模块
 i2c_dri #(
-    .SLAVE_ADDR  (SLAVE_ADDR),  //EEPROM从机地址
-    .CLK_FREQ    (CLK_FREQ  ),  //模块输入的时钟频率
-    .I2C_FREQ    (I2C_FREQ  )   //IIC_SCL的时钟频率
+    .SLAVE_ADDR    (SLAVE_ADDR),       //从机地址
+    .CLK_FREQ      (CLK_FREQ),         //模块输入的时钟频率
+    .I2C_FREQ      (I2C_FREQ)          //IIC_SCL的时钟频率
 ) u_i2c_dri(
-    .clk          (sys_clk),
-    .rst_n        (sys_rst_n), 
-
-    .i2c_exec     (i2c_exec  ), 
-    .bit_ctrl     (bit_ctrl  ), 
-    .i2c_rh_wl    (i2c_rh_wl ), 
-    .i2c_addr     (i2c_addr  ), 
-    .i2c_data_w   (i2c_data_w), 
-    .i2c_data_r   (i2c_data_r), 
-    .i2c_done     (i2c_done  ), 
-    .i2c_ack      (i2c_ack   ), 
-    .scl          (scl       ), 
-    .sda          (sda       ),
-    .dri_clk      (dri_clk   )
+    .clk           (sys_clk),          //系统时钟
+    .rst_n         (sys_rst_n),        //系统复位信号
+    
+    .i2c_exec      (i2c_exec),         //I2C触发执行信号
+    .bit_ctrl      (bit_ctrl),         //字地址位控制(0:8位, 1:16位)
+    .i2c_rh_wl     (i2c_rh_wl),        //I2C读写控制信号
+    .i2c_addr      (i2c_addr),         //I2C器件内地址
+    .i2c_data_w    (i2c_data_w),       //I2C要写的数据
+    .i2c_data_r    (i2c_data_r),       //I2C读出的数据
+    .i2c_done      (i2c_done),         //I2C一次操作完成
+    .i2c_ack       (i2c_ack),          //应答标志
+    .dri_clk       (dri_clk),          //驱动时钟
+    
+    .scl           (scl),              //I2C的SCL时钟信号
+    .sda           (sda)               //I2C的SDA信号
 );
-
 tmp1075n u_tmp1075n(
     .clk          (sys_clk),
     .rst_n        (sys_rst_n),

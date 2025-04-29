@@ -17,7 +17,7 @@
 
 module i2c_dri
     #(
-      parameter   SLAVE_ADDR = 7'b1010000   ,  //EEPROM从设备地址
+      parameter   SLAVE_ADDR = 7'b1010000   ,  //I2C从设备地址
       parameter   CLK_FREQ   = 26'd50_000_000, //系统时钟频率
       parameter   I2C_FREQ   = 18'd250_000     //IIC_SCL时钟频率
     )

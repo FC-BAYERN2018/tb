@@ -8,8 +8,8 @@ module tmp1075n(
 );
 
 // 寄存器定义
-reg [15:0] config_reg = 16'h61A0; // 默认配置值
-reg [15:0] temp_reg = 16'h2720;   // 默认温度值(27.20°C)
+reg [15:0] config_reg = 16'h61AB; // 默认配置值
+reg [15:0] temp_reg = 16'h2720;   // 换算关系为 16进制272对应的10进制626*0.0625=39.125℃
 
 // I2C状态机参数
 localparam IDLE = 0;
@@ -73,27 +73,28 @@ always @(posedge scl or negedge rst_n) begin
             end
             
             ACK: begin
-                sda_oe <= 1'b1;  // 从机控制SDA发送应答
-                sda_out <= 1'b0; // 明确拉低SDA输出，表示ACK
-                if(rw_bit && byte_cnt == 0) begin // 读操作且是第一个字节
+                sda_oe <= 1'b1;
+                sda_out <= ack_out;
+                if(rw_bit && byte_cnt == 0) begin
                     state <= READ_DATA;
                     bit_cnt <= 7;
-                    byte_cnt <= byte_cnt + 1;
+                    // byte_cnt <= byte_cnt + 1; // 不再自增
                 end
-                else if(!rw_bit) begin // 写操作
+                else if(!rw_bit) begin
                     if(byte_cnt == 0) begin
-                        state <= REG_ADDR;  // 接收寄存器地址
+                        state <= REG_ADDR;
                         bit_cnt <= 7;
-                        byte_cnt <= byte_cnt + 1;
                     end
-                    else begin
-                        state <= WRITE_DATA;  // 接收数据
+                    else if(byte_cnt == 1) begin
+                        state <= WRITE_DATA;
                         bit_cnt <= 7;
-                        byte_cnt <= byte_cnt + 1;
+                    end
+                    else if(byte_cnt == 2) begin
+                        state <= IDLE; // 低8位数据写完后直接回到IDLE
                     end
                 end
                 else begin
-                    state <= IDLE;  // 其他情况回到空闲状态
+                    state <= IDLE;
                 end
             end
             
@@ -111,21 +112,23 @@ always @(posedge scl or negedge rst_n) begin
             end
             
             WRITE_DATA: begin
-                sda_oe <= 1'b0;  // 释放SDA总线接收数据
+                sda_oe <= 1'b0;
                 if(bit_cnt > 0) begin
                     shift_reg[bit_cnt-1] <= sda;
                     bit_cnt <= bit_cnt - 1;
                 end
                 else begin
-                    // 写入配置寄存器
                     if(reg_addr == 8'h01) begin
-                        if(byte_cnt == 2) // 第一个数据字节是高8位
+                        if(byte_cnt == 1)
                             config_reg[15:8] <= shift_reg;
-                        else if(byte_cnt == 3) // 第二个数据字节是低8位
+                        else if(byte_cnt == 2)
                             config_reg[7:0] <= shift_reg;
                     end
                     state <= ACK;
-                    ack_out <= 1'b0;  // 发送ACK（低电平）
+                    ack_out <= 1'b0;
+                    // 只在这里自增byte_cnt
+                    if(byte_cnt < 2)
+                        byte_cnt <= byte_cnt + 1;
                 end
             end
             
